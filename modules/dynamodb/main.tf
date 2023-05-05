@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "db" {
-  name = module.labels.id
+  name = module.label.id
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"
 
@@ -10,8 +10,9 @@ resource "aws_dynamodb_table" "db" {
 
 }
 
-module "labels" {
-  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
+module "label" {
+  source   = "cloudposse/label/null"
+  version = "0.25.0"
   context = var.context
   name    = var.name
 }

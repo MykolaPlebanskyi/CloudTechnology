@@ -1,5 +1,6 @@
 module "name" {
-  source = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
 
   namespace   = var.namespace
   environment = var.environment

@@ -9,3 +9,8 @@ variable "environment" {
 variable "delimiter" {
   type = string
 }
+
+variable "instance_role_enabled" {
+  type    = bool
+  default = true
+}
