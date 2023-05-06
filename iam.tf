@@ -73,10 +73,12 @@ resource "aws_iam_role" "instance" {
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
 }
 
-# resource "aws_iam_role_policy_attachment" "test-attach" {
-#   role       = aws_iam_role.instance.name
-#   policy_arn = aws_iam_policy.example.arn
-# }
-
+resource "aws_lambda_permission" "allow_api_gateway" {
+  statement_id  = "AllowExecutionFromAPIGateWay"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda.lambda_authors_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*/GET${aws_api_gateway_resource.authors.path}"
+}
 
 
