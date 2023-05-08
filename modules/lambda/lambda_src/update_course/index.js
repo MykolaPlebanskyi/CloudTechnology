@@ -6,40 +6,53 @@ const dynamodb = new AWS.DynamoDB({
 
 exports.handler = (event, context, callback) => {
   const params = {
-    Item: {
+    Key: {
       id: {
         S: event.id
-      },
-      title: {
-        S: event.title
-      },
-      watchHref: {
-        S: event.watchHref
-      },
-      authorId: {
-        S: event.authorId
-      },
-      length: {
-        S: event.length
-      },
-      category: {
-        S: event.category
       }
     },
-    TableName: process.env.TABLE_NAME
+    ExpressionAttributeNames: {
+      "#title": "title",
+      "#authorId": "authorId",
+      "#length": "length",
+      "#category": "category",
+      "#watchHref": "watchHref"
+    },
+    ExpressionAttributeValues: {
+      ":title": {
+        S: event.title
+      },
+      ":authorId": {
+        S: event.authorId
+      },
+      ":length": {
+        S: event.length
+      },
+      ":category": {
+        S: event.category
+      },
+      ":watchHref": {
+        S: event.watchHref
+      }
+    },
+    UpdateExpression: "SET #title = :title, #watchHref = :watchHref, #authorId = :authorId, #length = :length, #category = :category",
+    TableName: process.env.TABLE_NAME,
+    ReturnValues: "ALL_NEW",
+    ConditionExpression: "attribute_exists(id)"
   };
-  dynamodb.putItem(params, (err, data) => {
+  
+  dynamodb.updateItem(params, (err, data) => {
     if (err) {
       console.log(err);
       callback(err);
     } else {
       callback(null, {
-        id: params.Item.id.S,
-        title: params.Item.title.S,
-        watchHref: params.Item.watchHref.S,
-        authorId: params.Item.authorId.S,
-        length: params.Item.length.S,
-        category: params.Item.category.S
+        id: data.Attributes.id.S,
+        title: data.Attributes.title.S,
+        watchHref: data.Attributes.watchHref.S,
+        authorId: data.Attributes.authorId.S,
+        length: data.Attributes.length.S,
+        category: data.Attributes.category.S
       });
     }
   });
