@@ -27,27 +27,6 @@ resource "aws_api_gateway_resource" "authors" {
 
 ####################
 
-resource "aws_api_gateway_method" "courses_option" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.courses.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "courses_integration" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.courses.id
-  http_method = aws_api_gateway_method.courses_option.http_method
-  type        = "MOCK"
-  request_templates = {
-    "application/json" = <<PARAMS
-{ "statusCode": 200 }
-PARAMS
-  }
-}
-
-####################
-
 resource "aws_api_gateway_method" "courses_post" {
   rest_api_id          = aws_api_gateway_rest_api.this.id
   resource_id          = aws_api_gateway_resource.courses.id
@@ -180,27 +159,6 @@ resource "aws_api_gateway_integration_response" "courses_get" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-  }
-}
-
-#####################
-
-resource "aws_api_gateway_method" "course_option" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.course.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "course_integration" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.course.id
-  http_method = aws_api_gateway_method.course_option.http_method
-  type        = "MOCK"
-  request_templates = {
-    "application/json" = <<PARAMS
-{ "statusCode": 200 }
-PARAMS
   }
 }
 
@@ -397,28 +355,6 @@ resource "aws_api_gateway_integration_response" "course_delete" {
   }
 }
 
-
-#####################
-
-resource "aws_api_gateway_method" "authors_option" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.authors.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "authors_integration" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.authors.id
-  http_method = aws_api_gateway_method.authors_option.http_method
-  type        = "MOCK"
-  request_templates = {
-    "application/json" = <<PARAMS
-{ "statusCode": 200 }
-PARAMS
-  }
-}
-
 #####################
 
 resource "aws_api_gateway_method" "get_authors" {
@@ -491,6 +427,34 @@ resource "aws_api_gateway_stage" "dev" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   stage_name    = "dev"
 }
+
+####################
+
+module "cors_authors" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.3"
+
+  api_id          = aws_api_gateway_rest_api.this.id
+  api_resource_id = aws_api_gateway_resource.authors.id
+}
+
+module "cors_courses" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.3"
+
+  api_id          = aws_api_gateway_rest_api.this.id
+  api_resource_id = aws_api_gateway_resource.courses.id
+}
+
+module "cors_course" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.3"
+
+  api_id          = aws_api_gateway_rest_api.this.id
+  api_resource_id = aws_api_gateway_resource.course.id
+}
+
+####################
 
 resource "aws_api_gateway_request_validator" "this" {
   name                  = "validate_request_body"
