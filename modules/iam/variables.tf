@@ -1,4 +1,4 @@
-variable "table_author_arn" {
+variable "table_authors_arn" {
     type = string
 }
 

@@ -53,15 +53,8 @@ module "lambda_authors" {
     TABLE_NAME = var.table_author_name
   }
 
-  attach_policy_statements = true
-  policy_statements = {
-    dynamodb = {
-      effect    = "Allow",
-      actions   = ["dynamodb:Scan"],
-      resources = [var.table_author_arn]
-    }
-
-  }
+  create_role = false
+  lambda_role = var.lambda_authors_role_arn
 
   tags = module.label_authors.tags
 }

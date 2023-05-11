@@ -226,7 +226,7 @@ resource "aws_api_gateway_method" "course_put" {
   resource_id   = aws_api_gateway_resource.course.id
   http_method   = "PUT"
   authorization = "NONE"
-    request_models = {
+  request_models = {
     "application/json" = replace("${module.label_api.id}-PutCourse", "-", "")
   }
   request_parameters = {
@@ -431,7 +431,7 @@ resource "aws_api_gateway_stage" "dev" {
 ####################
 
 module "cors_authors" {
-  source = "squidfunk/api-gateway-enable-cors/aws"
+  source  = "squidfunk/api-gateway-enable-cors/aws"
   version = "0.3.3"
 
   api_id          = aws_api_gateway_rest_api.this.id
@@ -439,7 +439,7 @@ module "cors_authors" {
 }
 
 module "cors_courses" {
-  source = "squidfunk/api-gateway-enable-cors/aws"
+  source  = "squidfunk/api-gateway-enable-cors/aws"
   version = "0.3.3"
 
   api_id          = aws_api_gateway_rest_api.this.id
@@ -447,7 +447,7 @@ module "cors_courses" {
 }
 
 module "cors_course" {
-  source = "squidfunk/api-gateway-enable-cors/aws"
+  source  = "squidfunk/api-gateway-enable-cors/aws"
   version = "0.3.3"
 
   api_id          = aws_api_gateway_rest_api.this.id

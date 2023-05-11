@@ -14,3 +14,9 @@ resource "aws_iam_role" "table_courses" {
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
 }
+
+resource "aws_iam_role" "table_authors" {
+  name               = module.label_table_authors.id
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+}
